@@ -3,16 +3,12 @@ import { Button } from '@material-ui/core';
 import './Header.css';
 
 class Header extends Component {
-
-
     render(){
         const access_token = "guest";
         const book_show = "isMovieSelectedNot";
         
         let button;
         let book_show_button;
-
-        const { classes } = this.props;
 
         if(access_token=="guest"){
             button = <Button variant="contained" onClick={this.handleOpen}>Login</Button>
@@ -33,15 +29,9 @@ class Header extends Component {
             <div className="login-logout">
                 {button}
             </div>
-
-         
-            
         </div>
         )
-    }
-
-    
+    }    
 }
-
 
 export default Header;
