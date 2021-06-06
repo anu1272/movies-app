@@ -1,0 +1,12 @@
+.flex-container {
+    display: flex;
+}
+.movie-poster {
+    width: 20%;
+}
+.movie-trailer-info {
+    width: 60%;
+}
+.movie-artists-ratings {
+    width: 20%;
+}

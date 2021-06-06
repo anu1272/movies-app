@@ -13,6 +13,9 @@ import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
+import { Link } from 'react-router-dom';
+import {useDispatch} from 'react-redux';
+import Header from '../../common/header/Header';
 import './Home.css';
 
   const useStyles = makeStyles(theme => ({
@@ -63,9 +66,14 @@ export default function Home() {
     const [genresList,setGenresList] = useState([]);
     const [artistsList,setArtistsList] = useState([]);
 
+    const dispatch = useDispatch();
+
     async function loadMovies(){
       const rawResponse = await fetch("http://localhost:8085/api/v1/movies?page=1&limit=10")
       const data = await rawResponse.json()
+      
+      dispatch({"type":"MOVIES_LIST",payload:data});
+
       setMoviesList(data.movies);
     }
 
@@ -90,7 +98,6 @@ export default function Home() {
     });
 
     //var myMovieFilters = new Set();
-
     const inputChangeHandler = (e) => {
       const state = addMovieFilters;
       state[e.target.name] = e.target.value;
@@ -100,12 +107,21 @@ export default function Home() {
    }
 
 
+   const updateMovieDetailsHandler = async (e) =>  {
+    const movieId = e.target.id;
+    const rawResponse = await fetch("http://localhost:8085/api/v1/movies/"+movieId.toString())
+    const data = await rawResponse.json() 
+    dispatch({"type":"SELECTED_MOVIE_ID",payload:data});
+
+    const rawResponse2 = await fetch("http://localhost:8085/api/v1/movies/"+movieId.toString()+"/artists")
+    const data2 = await rawResponse2.json() 
+    dispatch({"type":"SELECTED_MOVIE_ARTISTS",payload:data2});
+
+}
+
 
    // const { movieName, artist, genre, releaseDateStart, releaseDateEnd } = addMovieFilters;
-
    // const applyMovieFilters = (e) => {
-    
-    
     // console.log('======= apply movie filter =========');
     // console.log(addMovieFilters);
     // console.log(addMovieFilters.artist);
@@ -131,6 +147,7 @@ export default function Home() {
 
     return(
       <div>
+         <Header />
           <div className="upcoming-movies-header">Upcoming Movies</div>
           <div className={classes.root}>
             <GridList cellHeight={250} className={classes.gridList} cols={6}>
@@ -154,7 +171,10 @@ export default function Home() {
               <GridList cellHeight={350} cols={4}>
               {moviesList.map(movie => (
                 <GridListTile key={movie.id} >
-                  <img src={movie.poster_url} alt={movie.title} className={classes.pointer}/>
+                  <Link to="/details">
+                        <img src={movie.poster_url} alt={movie.title} className={classes.pointer} id={movie.id} 
+                             onClick={updateMovieDetailsHandler}/>
+                  </Link>
                   <GridListTileBar
                     title={movie.title}
                     subtitle={<span>Release Date: {movie.release_date}</span>}
@@ -167,7 +187,9 @@ export default function Home() {
               </GridList>
             </div>
             </div>
-              <div className="released-movies-filterBy">
+
+
+            <div className="released-movies-filterBy">
               <Card className={classes2.root} variant="outlined">
                 <CardContent>
                 <Typography className={classes2.title} color="textSecondary" gutterBottom>
