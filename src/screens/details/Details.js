@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Typography from '@material-ui/core/Typography';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles/';
@@ -34,10 +34,7 @@ const useStyles = makeStyles(theme => ({
       },    
  }));
 
- function _onReady(event) {
-    event.target.pauseVideo();
-  }
-
+ 
 export default function Details() {
 
     const classes = useStyles();
@@ -45,13 +42,40 @@ export default function Details() {
     const selectedMovie = useSelector(state => state.selectedMovie)
     const selectedMovieArtists = useSelector(state => state.selectedMovieArtists)
 
-    //console.log(selectedMovie.trailer_url.toString().split("="));
+    const qualities = ['auto', '240', '380', '480', '720', '1080', '1440', '2160'];
+
+    var trailerVideoId = '';
+
+    if(selectedMovie){
+        trailerVideoId = selectedMovie.trailer_url.toString().split("=")[1];
+    }
+
+    const [suggestedQuality, setSuggestedQuality] = useState('auto');
+    const [volume, setVolume] = useState(1);
+    const [paused, setPaused] = useState(false);
+
+    function handlePlayerPause() {
+        setPaused(true);
+      }
+    
+      function handlePlayerPlay() {
+        setPaused(false);
+      }
+    
+      function handleVolume(event) {
+        setVolume(parseFloat(event.target.value));
+      }
+    
+      function handleQuality(event) {
+        setSuggestedQuality(qualities[event.target.selectedIndex]);
+      }
+    
 
     if(!selectedMovieArtists.artists){
         return null;
     }
 
-  return (
+ return (
     <div>
         <BookShowHeader/>
         <Typography className={classes.backUrl}>
@@ -85,7 +109,20 @@ export default function Details() {
         </Typography>
         <Typography className={classes.info}>
             <span><b>Trailer:&nbsp;</b></span>
-            <YouTube videoId="J76wN0TPI4" className={classes.player} onReady={_onReady} autoplay/>
+        <div>
+            <YouTube
+            video={trailerVideoId}
+            width={640}
+            height={480}
+            autoplay
+            controls={false}
+            suggestedQuality={suggestedQuality}
+            volume={volume}
+            paused={paused}
+            onPause={handlePlayerPause}
+            onPlaying={handlePlayerPlay}
+            />
+        </div>
         </Typography>
         </div> 
        

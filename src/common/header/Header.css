@@ -12,11 +12,13 @@
     background-color: #ff7f7f;
     height: 35px;
     animation: _logo_rotation 8s infinite linear;
+
 }
 
 @keyframes _logo_rotation {
-    50% {transform: rotate(180deg);}
+    50% {transform: rotateY(50deg);}
 }
+  
 
 .login-logout {
     position: absolute; 

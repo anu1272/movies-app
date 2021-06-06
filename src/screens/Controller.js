@@ -14,10 +14,10 @@ export default function Controller() {
       <Router>
         <div>
           <Route 
-            path="/" 
+            exact path="/" 
             component={ Home } />
           <Route 
-            path="/details" 
+            exact path="/details" 
             component={ Details } 
           />
           <Route 
